@@ -263,7 +263,7 @@ def encode_wav(wav: torch.Tensor, path: tp.Union[str, Path], samplerate: int,
 def encode_ffmpeg(wav: torch.Tensor, path: tp.Union[str, Path], samplerate: int,
                   bits_per_sample: int = 16):
     """Save the given `[C, T]` float tensor with ffmpeg, in the format given
-    by the extension of `path` (e.g. flac, which sphn can only decode)."""
+    by the extension of `path` (e.g. flac)."""
     channels, _ = wav.shape
     input_format = 's16le' if bits_per_sample == 16 else 's32le'
     command = [

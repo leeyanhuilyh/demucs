@@ -22,7 +22,6 @@ See the end of this module (if __name__ == "__main__")
 
 import subprocess
 
-import sphn
 import torch as th
 
 from pathlib import Path
@@ -208,36 +207,16 @@ class Separator:
         self._samplerate = self._model.samplerate
 
     def _load_audio(self, track: Path):
-        errors = {}
-        wav = None
-
+        # Decoded with ffmpeg alone. sphn was tried first before, but it ships no
+        # prebuilt wheels for ARM Linux, so installing it there means compiling it
+        # from Rust source, which fails on recent CMake.
         try:
-            data, sr = sphn.read(str(track))
-        except Exception as err:
-            errors["sphn"] = str(err)
-        else:
-            wav = convert_audio(th.from_numpy(data), int(sr),
-                                self._samplerate, self._audio_channels)
-
-        if wav is None:
-            # Fallback on ffmpeg, which supports more formats than sphn.
-            try:
-                wav = AudioFile(track).read(streams=0, samplerate=self._samplerate,
-                                            channels=self._audio_channels)
-            except FileNotFoundError:
-                errors["ffmpeg"] = "FFmpeg is not installed."
-            except subprocess.CalledProcessError:
-                errors["ffmpeg"] = "FFmpeg could not read the file."
-
-        if wav is None:
-            raise LoadAudioError(
-                "\n".join(
-                    "When trying to load using {}, got the following error: {}".format(
-                        backend, error
-                    )
-                    for backend, error in errors.items()
-                )
-            )
+            wav = AudioFile(track).read(streams=0, samplerate=self._samplerate,
+                                        channels=self._audio_channels)
+        except FileNotFoundError:
+            raise LoadAudioError("FFmpeg is not installed.")
+        except subprocess.CalledProcessError:
+            raise LoadAudioError("FFmpeg could not read the file.")
         return wav
 
     def separate_tensor(

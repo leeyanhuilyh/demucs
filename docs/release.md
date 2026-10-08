@@ -1,5 +1,11 @@
 # Release notes for Demucs
 
+## Unreleased
+
+**ffmpeg-only audio decoding**: the sphn dependency is removed and input audio is always
+read through ffmpeg, which is now required. sphn publishes no prebuilt wheels for ARM
+Linux, so installing it on a Raspberry Pi meant compiling it from Rust source.
+
 ## V4.1.0, 11th of July 2026
 
 **Packaging overhaul**: the project now uses `pyproject.toml` with the hatchling build

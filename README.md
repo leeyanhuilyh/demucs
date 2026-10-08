@@ -112,9 +112,7 @@ for separation. Two extras are available: `train` to train a new model (see the
 [training doc](docs/training.md)), and `quantized` for the diffq quantized models
 (e.g. `uvx "demucs[quantized]" -n mdx_q MY_TRACK.mp3`).
 
-Having `ffmpeg` installed is recommended but optional: it is required for flac output,
-and for reading the audio formats that [sphn](https://github.com/kyutai-labs/sphn)
-does not decode.
+`ffmpeg` must be installed: it is used to read every input file, and for flac output.
 
 ### For musicians
 
@@ -221,9 +219,8 @@ Creating an environment variable `PYTORCH_NO_CUDA_MEMORY_CACHING=1` is also help
 Separated tracks are stored in the `separated/MODEL_NAME/TRACK_NAME` folder. There you will find four stereo wav files sampled at 44.1 kHz: `drums.wav`, `bass.wav`,
 `other.wav`, `vocals.wav` (or `.mp3` if you used the `--mp3` option).
 
-All audio formats supported by [sphn](https://github.com/kyutai-labs/sphn) can be processed
-directly (wav, flac, mp3, ogg, aac...). Other formats are handled through `ffmpeg` when it
-is installed, which should support pretty much anything.
+Input is read through `ffmpeg`, so any format it supports can be processed, including
+the audio track of a video file.
 Audio is resampled on the fly if necessary.
 The output will be a wav file encoded as int16.
 You can save as float32 wav files with `--float32`, or 24 bits integer wav with `--int24`.
